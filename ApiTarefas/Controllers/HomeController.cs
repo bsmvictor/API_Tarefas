@@ -1,3 +1,4 @@
+using ApiTarefas.ModelVielws;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiTarefas.Controllers; 
@@ -9,8 +10,12 @@ namespace ApiTarefas.Controllers;
 public class HomeController : ControllerBase
 {
     [HttpGet] // Define que o método responde a requisições GET
-    public string Index()
+    public HomeView Index()
     {
-        return "Hello World";
+        return new HomeView()
+        {
+            Mensagem = "Bem-vindo a API de Tarefas",
+            Documentacao = "Em breve documentação"
+        };
     }
 }
