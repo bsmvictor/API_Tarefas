@@ -75,4 +75,19 @@ public class TarefasController : ControllerBase
 
         return StatusCode(200, tarefaDb);
     }
+    
+    [HttpDelete("{id}")] // Define que o método responde a requisições PUT
+    public IActionResult Update([FromRoute] int id)
+    {
+        var tarefaDb = _database.Tarefas.Find(id);
+        if(tarefaDb == null)
+        {
+            return StatusCode(404, new { Mensagem = $"Tarefa ({id}) não encontrada!" });
+        }
+        
+        _database.Tarefas.Remove(tarefaDb);
+        _database.SaveChanges();
+        
+        return StatusCode(204);
+    }
 }
