@@ -1,4 +1,6 @@
 using ApiTarefas.Database;
+using ApiTarefas.Services;
+using ApiTarefas.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ builder.Services.AddDbContext<TarefasContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(9,2,0)));
 });
+
+// Adicionando serviços de serviços
+builder.Services.AddScoped<ITarefasServicos ,TarefasServico>();
 
 // Adicionando serviços de controllers
 builder.Services.AddControllers();
