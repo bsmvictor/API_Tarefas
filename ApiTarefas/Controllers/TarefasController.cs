@@ -22,6 +22,7 @@ public class TarefasController : ControllerBase
     public IActionResult Index()
     {
         var tarefas = _database.Tarefas.ToList();
+        
         return StatusCode(200, tarefas);
     }
     
@@ -35,6 +36,31 @@ public class TarefasController : ControllerBase
         
         _database.Tarefas.Add(tarefa);
         _database.SaveChanges();
+        
         return StatusCode(201, tarefa);
+    }
+    
+    [HttpPut("{id}")] // Define que o método responde a requisições PUT
+    public IActionResult Update([FromRoute] int id, [FromBody] Tarefa tarefa)
+    {
+        if (string.IsNullOrEmpty(tarefa.Titulo))
+        {
+            return StatusCode(400, new { Mensagem = "O título não foi encontrado, a tarefa pode ser inexistente!" });
+        }
+
+        var tarefaDb = _database.Tarefas.Find(id);
+        if(tarefaDb == null)
+        {
+            return StatusCode(404, new { Mensagem = $"Tarefa ({id}) não encontrada!" });
+        }
+        
+        tarefaDb.Titulo = tarefa.Titulo;
+        tarefaDb.Descricao = tarefa.Descricao;
+        tarefaDb.Concluida = tarefa.Concluida;
+        
+        _database.Tarefas.Update(tarefaDb);
+        _database.SaveChanges();
+        
+        return StatusCode(200, tarefaDb);
     }
 }
