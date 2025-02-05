@@ -1,4 +1,5 @@
 using ApiTarefas.Database;
+using ApiTarefas.DTO;
 using ApiTarefas.Models;
 using ApiTarefas.ModelVielws;
 using Microsoft.AspNetCore.Mvc;
@@ -27,23 +28,28 @@ public class TarefasController : ControllerBase
     }
     
     [HttpPost("criar")] // Define que o método responde a requisições POST
-    public IActionResult Create([FromBody] Tarefa tarefa)
+    public IActionResult Create([FromBody] Tarefa tarefaDto)
     {
-        if(string.IsNullOrEmpty(tarefa.Titulo))
-        {
+        if(string.IsNullOrEmpty(tarefaDto.Titulo))
             return StatusCode(400, new { Mensagem = "O título não foi encontrado, a tarefa pode ser inexistente!" });
-        }
         
-        _database.Tarefas.Add(tarefa);
+        var tarefa = new Tarefa
+        {
+            Titulo = tarefaDto.Titulo,
+            Descricao = tarefaDto.Descricao,
+            Concluida = tarefaDto.Concluida
+        };
+        
+        _database.Tarefas.Add(tarefaDto);
         _database.SaveChanges();
         
         return StatusCode(201, tarefa);
     }
     
     [HttpPut("{id}")] // Define que o método responde a requisições PUT
-    public IActionResult Update([FromRoute] int id, [FromBody] Tarefa tarefa)
+    public IActionResult Update([FromRoute] int id, [FromBody] TarefaDto tarefaDto)
     {
-        if (string.IsNullOrEmpty(tarefa.Titulo))
+        if (string.IsNullOrEmpty(tarefaDto.Titulo))
         {
             return StatusCode(400, new { Mensagem = "O título não foi encontrado, a tarefa pode ser inexistente!" });
         }
@@ -54,9 +60,9 @@ public class TarefasController : ControllerBase
             return StatusCode(404, new { Mensagem = $"Tarefa ({id}) não encontrada!" });
         }
         
-        tarefaDb.Titulo = tarefa.Titulo;
-        tarefaDb.Descricao = tarefa.Descricao;
-        tarefaDb.Concluida = tarefa.Concluida;
+        tarefaDb.Titulo = tarefaDto.Titulo;
+        tarefaDb.Descricao = tarefaDto.Descricao;
+        tarefaDb.Concluida = tarefaDto.Concluida;
         
         _database.Tarefas.Update(tarefaDb);
         _database.SaveChanges();
