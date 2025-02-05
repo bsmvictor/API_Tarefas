@@ -63,4 +63,16 @@ public class TarefasController : ControllerBase
         
         return StatusCode(200, tarefaDb);
     }
+    
+    [HttpGet("{id}")] 
+    public IActionResult Show([FromRoute] int id)
+    {
+        var tarefaDb = _database.Tarefas.Find(id);
+        if (tarefaDb == null)
+        {
+            return StatusCode(404, new { Mensagem = $"Tarefa ({id}) não encontrada!" });
+        }
+
+        return StatusCode(200, tarefaDb);
+    }
 }
